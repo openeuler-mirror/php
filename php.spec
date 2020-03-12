@@ -28,7 +28,7 @@
 
 Name:          php
 Version:       %{upver}%{?rcver:~%{rcver}}
-Release:       1
+Release:       2
 Summary:       PHP scripting language for creating dynamic web sites
 License:       PHP and Zend and BSD and MIT and ASL 1.0 and NCSA
 URL:           http://www.php.net/
@@ -64,6 +64,27 @@ Patch0013:     https://github.com/php/php-src/commit/cd0a37994e3cbf1f0aa1174155d
 Patch0014:     https://github.com/php/php-src/commit/be50a72715c141befe6f34ece660745da894aaf3.patch
 Patch0015:     https://github.com/php/php-src/commit/c1729272b17a1fe893d1a54e423d3b71470f3ee8.patch
 Patch0016:     php-5.6.3-datetests.patch
+
+Patch6000:     CVE-2019-9021.patch
+Patch6001:     CVE-2019-9022.patch
+Patch6002:     CVE-2019-9023.patch
+Patch6003:     CVE-2019-9024.patch
+Patch6004:     CVE-2019-9637.patch
+Patch6005:     CVE-2019-9638-CVE-2019-9639.patch
+Patch6006:     CVE-2019-9640.patch
+Patch6007:     php-CVE-2018-20783.patch
+Patch6008:     php-CVE-2019-9641.patch
+Patch6009:     CVE-2019-11034.patch
+Patch6010:     CVE-2019-11035.patch
+Patch6011:     CVE-2019-11036.patch
+Patch6012:     CVE-2019-11041.patch
+Patch6013:     CVE-2019-11042.patch
+Patch6014:     CVE-2019-11043.patch
+Patch6015:     CVE-2018-19935.patch
+Patch6016:     CVE-2019-11045.patch
+Patch6017:     CVE-2019-11046.patch
+Patch6018:     CVE-2019-11050.patch
+Patch6019:     CVE-2019-11047.patch
 
 BuildRequires: bzip2-devel, curl-devel >= 7.9, httpd-devel >= 2.0.46-1, pam-devel, httpd-filesystem, nginx-filesystem
 BuildRequires: libstdc++-devel, openssl-devel, sqlite-devel >= 3.6.0, zlib-devel, smtpdaemon, libedit-devel
@@ -1120,5 +1141,8 @@ systemctl try-restart php-fpm.service >/dev/null 2>&1 || :
 
 
 %changelog
+* Thu Mar 12 2020 openEuler Buildteam <buildteam@openeuler.org> - 7.2.10-2
+- Add CVE patches
+
 * Fri Feb 14 2020 openEuler Buildteam <buildteam@openeuler.org> - 7.2.10-1
 - Package init
