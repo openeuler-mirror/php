@@ -28,7 +28,7 @@
 
 Name:          php
 Version:       %{upver}%{?rcver:~%{rcver}}
-Release:       2
+Release:       3
 Summary:       PHP scripting language for creating dynamic web sites
 License:       PHP and Zend and BSD and MIT and ASL 1.0 and NCSA
 URL:           http://www.php.net/
@@ -85,6 +85,10 @@ Patch6016:     CVE-2019-11045.patch
 Patch6017:     CVE-2019-11046.patch
 Patch6018:     CVE-2019-11050.patch
 Patch6019:     CVE-2019-11047.patch
+#git.php.net/?p=php-src.git;a=patch;h=336d2086a9189006909ae06c7e95902d7d5ff77e
+Patch6020:     CVE-2018-19518.patch
+#git.php.net/?p=php-src.git;a=patch;h=a15af81b5f0058e020eda0f109f51a3c863f5212
+Patch6021:     CVE-2019-6977.patch
 
 BuildRequires: bzip2-devel, curl-devel >= 7.9, httpd-devel >= 2.0.46-1, pam-devel, httpd-filesystem, nginx-filesystem
 BuildRequires: libstdc++-devel, openssl-devel, sqlite-devel >= 3.6.0, zlib-devel, smtpdaemon, libedit-devel
@@ -104,7 +108,7 @@ Provides: php-zts = %{version}-%{release}, php-zts%{?_isa} = %{version}-%{releas
 
 Requires: httpd-mmn = %{_httpd_mmn}, php-common%{?_isa} = %{version}-%{release}, php-cli%{?_isa} = %{version}-%{release}
 Provides: mod_php = %{version}-%{release}, php(httpd)
-Recommends: php-fpm%{?_isa} = %{version}-%{release}
+#Recommends: php-fpm%{?_isa} = %{version}-%{release}
 Requires(pre): httpd-filesystem
 
 %description
@@ -527,7 +531,11 @@ The php-sodium package provides a simple,
 low-level PHP extension for the libsodium cryptographic library.
 %endif
 
-%package_help
+%package help
+Summary: help
+
+%description help
+help
 
 %prep
 %autosetup -n php-%{upver}%{?rcver} -p1
@@ -1141,6 +1149,12 @@ systemctl try-restart php-fpm.service >/dev/null 2>&1 || :
 
 
 %changelog
+* Mon Mar 16 2020 shijian <shijian16@huawei.com> - 7.2.10-3
+- Type:cves
+- ID:CVE-2018-19518 CVE-2019-6977
+- SUG:restart
+- DESC:fix CVE-2018-19518 CVE-2019-6977
+
 * Thu Mar 12 2020 openEuler Buildteam <buildteam@openeuler.org> - 7.2.10-2
 - Add CVE patches
 
