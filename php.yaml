@@ -1,0 +1,4 @@
+version-ctrl: github
+src_repo: php/php-src
+tag_prefix: ^v
+seperator: .
