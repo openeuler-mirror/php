@@ -28,7 +28,7 @@
 
 Name:          php
 Version:       %{upver}%{?rcver:~%{rcver}}
-Release:       4
+Release:       5
 Summary:       PHP scripting language for creating dynamic web sites
 License:       PHP and Zend and BSD and MIT and ASL 1.0 and NCSA
 URL:           http://www.php.net/
@@ -1151,6 +1151,9 @@ systemctl try-restart php-fpm.service >/dev/null 2>&1 || :
 
 
 %changelog
+* Mon May 18 2020 wangchen <wangchen137@huawei.com> - 7.2.10-5
+- rebuild for php
+
 * Fri Apr 24 2020 openEuler Buildteam <buildteam@openeuler.org> - 7.2.10-4
 - Type:cves
 - ID:CVE-2020-7064 CVE-2020-7066
