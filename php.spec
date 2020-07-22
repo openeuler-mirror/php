@@ -28,7 +28,7 @@
 
 Name:          php
 Version:       %{upver}%{?rcver:~%{rcver}}
-Release:       5
+Release:       6
 Summary:       PHP scripting language for creating dynamic web sites
 License:       PHP and Zend and BSD and MIT and ASL 1.0 and NCSA
 URL:           http://www.php.net/
@@ -91,6 +91,7 @@ Patch6020:     CVE-2018-19518.patch
 Patch6021:     CVE-2019-6977.patch
 Patch6022:     CVE-2020-7064.patch
 Patch6023:     CVE-2020-7066.patch
+Patch6024:     CVE-2019-11048.patch
 
 BuildRequires: bzip2-devel, curl-devel >= 7.9, httpd-devel >= 2.0.46-1, pam-devel, httpd-filesystem, nginx-filesystem
 BuildRequires: libstdc++-devel, openssl-devel, sqlite-devel >= 3.6.0, zlib-devel, smtpdaemon, libedit-devel
@@ -1151,6 +1152,12 @@ systemctl try-restart php-fpm.service >/dev/null 2>&1 || :
 
 
 %changelog
+* Tue Jul 21 2020 wangyue <wangyue92@huawei.com> - 7.2.10-6
+- Type:cves
+- ID:CVE-2019-11048
+- SUG:restart
+- DESC:fix CVE-2019-11048
+
 * Mon May 18 2020 wangchen <wangchen137@huawei.com> - 7.2.10-5
 - rebuild for php
 
