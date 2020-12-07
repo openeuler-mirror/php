@@ -28,7 +28,7 @@
 
 Name:          php
 Version:       %{upver}%{?rcver:~%{rcver}}
-Release:       7
+Release:       8
 Summary:       PHP scripting language for creating dynamic web sites
 License:       PHP and Zend and BSD and MIT and ASL 1.0 and NCSA
 URL:           http://www.php.net/
@@ -60,9 +60,12 @@ Patch0009:     php-7.2.3-ldap_r.patch
 Patch0010:     php-7.2.4-fixheader.patch
 Patch0011:     php-5.6.3-phpinfo.patch
 Patch0012:     php-7.2.8-getallheaders.patch
-Patch0013:     https://github.com/php/php-src/commit/cd0a37994e3cbf1f0aa1174155d3d662cefe2e7a.patch
-Patch0014:     https://github.com/php/php-src/commit/be50a72715c141befe6f34ece660745da894aaf3.patch
-Patch0015:     https://github.com/php/php-src/commit/c1729272b17a1fe893d1a54e423d3b71470f3ee8.patch
+#https://github.com/php/php-src/commit/cd0a37994e3cbf1f0aa1174155d3d662cefe2e7a.patch
+Patch0013:     cd0a37994e3cbf1f0aa1174155d3d662cefe2e7a.patch
+#https://github.com/php/php-src/commit/be50a72715c141befe6f34ece660745da894aaf3.patch
+Patch0014:     be50a72715c141befe6f34ece660745da894aaf3.patch
+#https://github.com/php/php-src/commit/c1729272b17a1fe893d1a54e423d3b71470f3ee8.patch
+Patch0015:     c1729272b17a1fe893d1a54e423d3b71470f3ee8.patch
 Patch0016:     php-5.6.3-datetests.patch
 
 Patch6000:     CVE-2019-9021.patch
@@ -114,6 +117,7 @@ Requires: httpd-mmn = %{_httpd_mmn}, php-common%{?_isa} = %{version}-%{release},
 Provides: mod_php = %{version}-%{release}, php(httpd)
 #Recommends: php-fpm%{?_isa} = %{version}-%{release}
 Requires(pre): httpd-filesystem
+Recommends: %{name}-help = %{version}-%{release}
 
 %description
 PHP is an HTML-embedded scripting language. PHP attempts to make it
@@ -1153,6 +1157,9 @@ systemctl try-restart php-fpm.service >/dev/null 2>&1 || :
 
 
 %changelog
+* Mon Nov 07 2020 liuweibo <liuweibo10@huawei.com> - 7.2.10-8
+- Append help recommends to main package
+
 * Mon Sep 21 2020 shaoqiang kang <kangshqoaing1@huawei.com> - 7.2.10-7
 - Fix CVE-2020-7068
 
