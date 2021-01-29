@@ -27,9 +27,9 @@
 
 Name:          php
 Version:       %{upver}%{?rcver:~%{rcver}}
-Release:       1
+Release:       2
 Summary:       PHP scripting language for creating dynamic web sites
-License:       PHP and Zend and BSD and MIT and ASL 1.0 and NCSA
+License:       PHP and Zend-2.0 and BSD and MIT and ASL 1.0 and NCSA
 URL:           http://www.php.net/
 Source0:       http://www.php.net/distributions/php-%{upver}%{?rcver}.tar.xz
 Source1:       php.conf
@@ -48,15 +48,16 @@ Source50:      10-opcache.ini
 Source51:      opcache-default.blacklist
 Source52:      20-ffi.ini
 
-Patch0001:     php-7.4.0-httpd.patch
-Patch0002:     php-7.2.0-includedir.patch
-Patch0003:     php-8.0.0-embed.patch
-Patch0004:     php-7.4.0-libdb.patch
-Patch0005:     php-8.0.0-systzdata-v19.patch
-Patch0006:     php-7.4.0-phpize.patch
-Patch0007:     php-7.4.0-ldap_r.patch
-Patch0008:     php-8.0.0-phpinfo.patch
-Patch0009:     php-7.4.0-datetests.patch
+Patch0:        php-7.4.0-httpd.patch
+Patch1:        php-7.2.0-includedir.patch
+Patch2:        php-8.0.0-embed.patch
+Patch3:        php-7.4.0-libdb.patch
+Patch4:        php-8.0.0-systzdata-v19.patch
+Patch5:        php-7.4.0-phpize.patch
+Patch6:        php-7.4.0-ldap_r.patch
+Patch7:        php-8.0.0-phpinfo.patch
+Patch8:        php-7.4.0-datetests.patch
+Patch9:        backport-CVE-2020-7071-Fix-bug-77423.patch
 
 BuildRequires: bzip2-devel, curl-devel >= 7.9, httpd-devel >= 2.0.46-1, pam-devel, httpd-filesystem, nginx-filesystem
 BuildRequires: libstdc++-devel, openssl-devel, sqlite-devel >= 3.6.0, zlib-devel, smtpdaemon, libedit-devel
@@ -1095,6 +1096,9 @@ systemctl try-restart php-fpm.service >/dev/null 2>&1 || :
 
 
 %changelog
+* Fri Jan 29 2021 panxiaohe <panxiaohe@huawei.com> - 8.0.0-2
+- Fix CVE-2020-7071 
+
 * Thu Dec 31 2020 panxiaohe <panxiaohe@huawei.com> - 8.0.0-1
 - Update to 8.0.0
 
