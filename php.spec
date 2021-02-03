@@ -28,7 +28,7 @@
 
 Name:          php
 Version:       %{upver}%{?rcver:~%{rcver}}
-Release:       12
+Release:       13
 Summary:       PHP scripting language for creating dynamic web sites
 License:       PHP and Zend and BSD and MIT and ASL 1.0 and NCSA LGPL-2.1+ and Apache-2.0 and Artistic-1.0-Perl
 URL:           http://www.php.net/
@@ -101,6 +101,9 @@ Patch6027:     backport-CVE-2020-7059-Fix-79099-OOB-read.patch
 Patch6028:     backport-CVE-2020-7062-Fix-bug-79221.patch
 Patch6029:     backport-CVE-2020-7071-Fix-bug-77423.patch
 Patch6030:     backport-CVE-2020-7060-Fix-bug-79037-global-buffer-overflow-in-mbfl_filt_co.patch
+Patch6031:     backport-Fix-bug-78079-openssl_encrypt_ccm.phpt-fails-with-op.patch
+Patch6032:     backport-CVE-2020-7069-Fix-bug-79601-Wrong-ciphertext-tag-in-AES-CCM-encryp.patch
+Patch6033:     backport-CVE-2020-7070-Do-not-decode-cookie-names-anymore.patch
 
 BuildRequires: bzip2-devel, curl-devel >= 7.9, httpd-devel >= 2.0.46-1, pam-devel, httpd-filesystem, nginx-filesystem
 BuildRequires: libstdc++-devel, openssl-devel, sqlite-devel >= 3.6.0, zlib-devel, smtpdaemon, libedit-devel
@@ -1162,6 +1165,9 @@ systemctl try-restart php-fpm.service >/dev/null 2>&1 || :
 
 
 %changelog
+* Wed Feb 3 2021 yangzhuangzhuang <yangzhuangzhuang1@huawei.com> - 7.2.10-13
+- Fix CVE-2020-7069 CVE-2020-7070
+
 * Tue Feb 2 2021 yangzhuangzhuang <yangzhuangzhuang1@huawei.com> - 7.2.10-12
 - Fix CVE-2020-7060
 
