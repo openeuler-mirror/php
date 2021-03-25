@@ -22,12 +22,11 @@
 %global with_freetds    0
 %global with_sodium     0
 %global with_pspell     0
-%global with_lmdb       0
 %global upver           8.0.0
 
 Name:          php
 Version:       %{upver}%{?rcver:~%{rcver}}
-Release:       1
+Release:       2
 Summary:       PHP scripting language for creating dynamic web sites
 License:       PHP and Zend-2.0 and BSD and MIT and ASL 1.0 and NCSA
 URL:           http://www.php.net/
@@ -51,13 +50,12 @@ Source52:      20-ffi.ini
 Patch0:        php-7.4.0-httpd.patch
 Patch1:        php-7.2.0-includedir.patch
 Patch2:        php-8.0.0-embed.patch
-Patch3:        php-7.4.0-libdb.patch
-Patch4:        php-8.0.0-systzdata-v19.patch
-Patch5:        php-7.4.0-phpize.patch
-Patch6:        php-7.4.0-ldap_r.patch
-Patch7:        php-8.0.0-phpinfo.patch
-Patch8:        php-7.4.0-datetests.patch
-Patch9:        backport-CVE-2020-7071-Fix-bug-77423.patch 
+Patch3:        php-8.0.0-systzdata-v19.patch
+Patch4:        php-7.4.0-phpize.patch
+Patch5:        php-7.4.0-ldap_r.patch
+Patch6:        php-8.0.0-phpinfo.patch
+Patch7:        php-7.4.0-datetests.patch
+Patch8:        backport-CVE-2020-7071-Fix-bug-77423.patch 
 
 BuildRequires: bzip2-devel, curl-devel >= 7.9, httpd-devel >= 2.0.46-1, pam-devel, httpd-filesystem, nginx-filesystem
 BuildRequires: libstdc++-devel, openssl-devel, sqlite-devel >= 3.6.0, zlib-devel, smtpdaemon, libedit-devel
@@ -380,10 +378,7 @@ using the GNU MP library.
 %package dba
 Summary: A database abstraction layer module for PHP applications
 License: PHP
-BuildRequires: libdb-devel, tokyocabinet-devel
-%if %{with_lmdb}
-BuildRequires: lmdb-devel
-%endif
+BuildRequires: lmdb-devel, tokyocabinet-devel
 Requires: php-common%{?_isa} = %{version}-%{release}
 
 %description dba
@@ -619,10 +614,7 @@ build --libdir=%{_libdir}/php --enable-pcntl --enable-opcache --enable-phpdbg \
 %endif
       --with-external-gd \
       --with-gmp=shared --enable-calendar=shared --enable-bcmath=shared --with-bz2=shared --enable-ctype=shared \
-      --enable-dba=shared --with-db4=%{_prefix} --with-tcadb=%{_prefix} \
-%if %{with_lmdb}
-      --with-lmdb=%{_prefix} \
-%endif
+      --enable-dba=shared --with-tcadb=%{_prefix} --with-lmdb=%{_prefix} \
       --enable-exif=shared --enable-ftp=shared --with-gettext=shared --with-iconv=shared --enable-sockets=shared \
       --enable-tokenizer=shared --with-ldap=shared --with-ldap-sasl --enable-mysqlnd=shared \
       --with-mysqli=shared,mysqlnd --with-mysql-sock=%{mysql_sock} \
@@ -700,10 +692,7 @@ build --includedir=%{_includedir}/php-zts --libdir=%{_libdir}/php-zts --enable-m
 %endif
       --with-external-gc \
       --with-gmp=shared --enable-calendar=shared --enable-bcmath=shared --with-bz2=shared --enable-ctype=shared \
-      --enable-dba=shared --with-db4=%{_prefix} --with-tcadb=%{_prefix} \
-%if %{with_lmdb}
-      --with-lmdb=%{_prefix} \
-%endif
+      --enable-dba=shared --with-tcadb=%{_prefix} --with-lmdb=%{_prefix} \
       --with-gettext=shared --with-iconv=shared --enable-sockets=shared --enable-tokenizer=shared --enable-exif=shared \
       --enable-ftp=shared --with-ldap=shared --with-ldap-sasl --enable-mysqlnd=shared \
       --with-mysqli=shared,mysqlnd --with-mysql-sock=%{mysql_sock} --enable-mysqlnd-threading \
@@ -1095,6 +1084,9 @@ systemctl try-restart php-fpm.service >/dev/null 2>&1 || :
 %{_mandir}/*
 
 %changelog
+* Thu Mar 25 2021 panxiaohe <panxiaohe@huawei.com> - 8.0.0-2
+- use lmdb instead of Berkeley DB for package dba
+
 * Thu Feb 4 2021 panxiaohe <panxiaohe@huawei.com> - 8.0.0-1
 - Update to 8.0.0
 - Fix CVE-2020-7060 CVE-2020-7069 CVE-2020-7070
