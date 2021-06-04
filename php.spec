@@ -27,7 +27,7 @@
 
 Name:          php
 Version:       %{upver}%{?rcver:~%{rcver}}
-Release:       2
+Release:       3
 Summary:       PHP scripting language for creating dynamic web sites
 License:       PHP and Zend-2.0 and BSD and MIT and ASL 1.0 and NCSA
 URL:           http://www.php.net/
@@ -58,6 +58,7 @@ Patch6:        php-7.4.0-ldap_r.patch
 Patch7:        php-8.0.0-phpinfo.patch
 Patch8:        php-7.4.0-datetests.patch
 Patch9:        backport-CVE-2020-7071-Fix-bug-77423.patch
+Patch10:       CVE-2021-21702.patch
 
 BuildRequires: bzip2-devel, curl-devel >= 7.9, httpd-devel >= 2.0.46-1, pam-devel, httpd-filesystem, nginx-filesystem
 BuildRequires: libstdc++-devel, openssl-devel, sqlite-devel >= 3.6.0, zlib-devel, smtpdaemon, libedit-devel
@@ -1096,6 +1097,9 @@ systemctl try-restart php-fpm.service >/dev/null 2>&1 || :
 
 
 %changelog
+* Tue Jun 1 2021 guoxiaoqi <guoxiaoqi2@huawei.com> - 8.0.0-3
+- Fix CVE-2021-21702
+
 * Fri Jan 29 2021 panxiaohe <panxiaohe@huawei.com> - 8.0.0-2
 - Fix CVE-2020-7071 
 
