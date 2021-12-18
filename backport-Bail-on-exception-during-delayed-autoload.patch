@@ -1,0 +1,71 @@
+From be8217368b85ab078905e17a732965053f3443d6 Mon Sep 17 00:00:00 2001
+From: Nikita Popov <nikita.ppv@gmail.com>
+Date: Thu, 23 Sep 2021 12:44:51 +0200
+Subject: [PATCH] Bail on exception during delayed autoload
+
+We shouldn't try to load further classes if one autoload throws.
+
+This fixes oss-fuzz #38881, though I believe there are still two
+deeper issues here: 1) Why do we allow autoloading with an active
+exception? 2) Exception save & restore should probably also save
+and restore the exception opline.
+---
+ Zend/tests/exception_during_variance_autoload.phpt | 31 ++++++++++++++++++++++
+ Zend/zend_inheritance.c                            |  3 +++
+ 2 files changed, 34 insertions(+)
+ create mode 100644 Zend/tests/exception_during_variance_autoload.phpt
+
+diff --git a/Zend/tests/exception_during_variance_autoload.phpt b/Zend/tests/exception_during_variance_autoload.phpt
+new file mode 100644
+index 0000000..995931d
+--- /dev/null
++++ b/Zend/tests/exception_during_variance_autoload.phpt
+@@ -0,0 +1,31 @@
++--TEST--
++Exception during delayed variance autoload
++--FILE--
++<?php
++spl_autoload_register(function($class) {
++    echo "$class\n";
++    if ($class == 'X') {
++        new Y;
++    }
++    if ($class == 'Y') {
++        new Q;
++    }
++});
++class A {
++    function method(): X {}
++}
++class B extends A {
++    function method(): Y {}
++}
++?>
++--EXPECTF--
++Y
++Q
++
++Warning: Uncaught Error: Class "Q" not found in %s:%d
++Stack trace:
++#0 %s(%d): {closure}('Y')
++#1 {main}
++  thrown in %s on line %d
++
++Fatal error: Could not check compatibility between B::method(): Y and A::method(): X, because class Y is not available in %s on line %d
+diff --git a/Zend/zend_inheritance.c b/Zend/zend_inheritance.c
+index b00c5e5..33869d6 100644
+--- a/Zend/zend_inheritance.c
++++ b/Zend/zend_inheritance.c
+@@ -2348,6 +2348,9 @@ static void load_delayed_classes() {
+ 
+ 	ZEND_HASH_FOREACH_STR_KEY(delayed_autoloads, name) {
+ 		zend_lookup_class(name);
++		if (EG(exception)) {
++			break;
++		}
+ 	} ZEND_HASH_FOREACH_END();
+ 
+ 	zend_hash_destroy(delayed_autoloads);
+-- 
+1.8.3.1
+

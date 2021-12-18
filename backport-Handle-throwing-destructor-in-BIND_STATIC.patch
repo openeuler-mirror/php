@@ -1,0 +1,88 @@
+From ec54ffad1e3b15fedfd07f7d29d97ec3e8d1c45a Mon Sep 17 00:00:00 2001
+From: Nikita Popov <nikita.ppv@gmail.com>
+Date: Wed, 29 Sep 2021 10:14:33 +0200
+Subject: [PATCH] Handle throwing destructor in BIND_STATIC
+
+Fixes oss-fuzz #39406.
+---
+ Zend/tests/bind_static_exception.phpt | 18 ++++++++++++++++++
+ Zend/zend_vm_def.h                    |  4 ++--
+ Zend/zend_vm_execute.h                |  4 ++--
+ 3 files changed, 22 insertions(+), 4 deletions(-)
+ create mode 100644 Zend/tests/bind_static_exception.phpt
+
+diff --git a/Zend/tests/bind_static_exception.phpt b/Zend/tests/bind_static_exception.phpt
+new file mode 100644
+index 0000000..c374130
+--- /dev/null
++++ b/Zend/tests/bind_static_exception.phpt
+@@ -0,0 +1,18 @@
++--TEST--
++BIND_STATIC may destroy a variable with a throwing destructor
++--FILE--
++<?php
++class Test {
++    function __destruct() {
++        throw new Exception("Foo");
++    }
++}
++try {
++    $new = new Test;
++    static $new;
++} catch (Exception $e) {
++    echo $e->getMessage(), "\n";
++}
++?>
++--EXPECT--
++Foo
+diff --git a/Zend/zend_vm_def.h b/Zend/zend_vm_def.h
+index 3262ddb..f324d80 100644
+--- a/Zend/zend_vm_def.h
++++ b/Zend/zend_vm_def.h
+@@ -8652,9 +8652,9 @@ ZEND_VM_HANDLER(183, ZEND_BIND_STATIC, CV, UNUSED, REF)
+ 
+ 	value = (zval*)((char*)ht->arData + (opline->extended_value & ~(ZEND_BIND_REF|ZEND_BIND_IMPLICIT)));
+ 
++	SAVE_OPLINE();
+ 	if (opline->extended_value & ZEND_BIND_REF) {
+ 		if (Z_TYPE_P(value) == IS_CONSTANT_AST) {
+-			SAVE_OPLINE();
+ 			if (UNEXPECTED(zval_update_constant_ex(value, EX(func)->op_array.scope) != SUCCESS)) {
+ 				HANDLE_EXCEPTION();
+ 			}
+@@ -8679,7 +8679,7 @@ ZEND_VM_HANDLER(183, ZEND_BIND_STATIC, CV, UNUSED, REF)
+ 		ZVAL_COPY(variable_ptr, value);
+ 	}
+ 
+-	ZEND_VM_NEXT_OPCODE();
++	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
+ }
+ 
+ ZEND_VM_HOT_HANDLER(184, ZEND_FETCH_THIS, UNUSED, UNUSED)
+diff --git a/Zend/zend_vm_execute.h b/Zend/zend_vm_execute.h
+index 987406a..a4a268d 100644
+--- a/Zend/zend_vm_execute.h
++++ b/Zend/zend_vm_execute.h
+@@ -46983,9 +46983,9 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BIND_STATIC_SPEC_CV_UNUSED_HAN
+ 
+ 	value = (zval*)((char*)ht->arData + (opline->extended_value & ~(ZEND_BIND_REF|ZEND_BIND_IMPLICIT)));
+ 
++	SAVE_OPLINE();
+ 	if (opline->extended_value & ZEND_BIND_REF) {
+ 		if (Z_TYPE_P(value) == IS_CONSTANT_AST) {
+-			SAVE_OPLINE();
+ 			if (UNEXPECTED(zval_update_constant_ex(value, EX(func)->op_array.scope) != SUCCESS)) {
+ 				HANDLE_EXCEPTION();
+ 			}
+@@ -47010,7 +47010,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_BIND_STATIC_SPEC_CV_UNUSED_HAN
+ 		ZVAL_COPY(variable_ptr, value);
+ 	}
+ 
+-	ZEND_VM_NEXT_OPCODE();
++	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
+ }
+ 
+ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CHECK_VAR_SPEC_CV_UNUSED_HANDLER(ZEND_OPCODE_HANDLER_ARGS)
+-- 
+1.8.3.1
+

@@ -1,0 +1,53 @@
+From 46f9fed0d8e4ca5264abd2da94105925024ede14 Mon Sep 17 00:00:00 2001
+From: Nikita Popov <nikita.ppv@gmail.com>
+Date: Thu, 15 Apr 2021 13:04:47 +0200
+Subject: [PATCH] Handle ref return from Iterator::key()
+
+Handle this in the implementation of get_current_key of user_it,
+so that the callers may assume that the key is not a reference.
+
+Fixes oss-fuzz #33018.
+---
+ Zend/tests/iterator_key_by_ref.phpt | 15 +++++++++++++++
+ Zend/zend_interfaces.c              |  3 +++
+ 2 files changed, 18 insertions(+)
+ create mode 100644 Zend/tests/iterator_key_by_ref.phpt
+
+diff --git a/Zend/tests/iterator_key_by_ref.phpt b/Zend/tests/iterator_key_by_ref.phpt
+new file mode 100644
+index 0000000..3bd2bcf
+--- /dev/null
++++ b/Zend/tests/iterator_key_by_ref.phpt
+@@ -0,0 +1,15 @@
++--TEST--
++Iterator::key() with by-ref return
++--FILE--
++<?php
++class Test extends ArrayIterator {
++    function &key() {
++        return $foo;
++    }
++}
++foreach (new Test([0]) as $k => $v) {
++    var_dump($k);
++}
++?>
++--EXPECT--
++NULL
+diff --git a/Zend/zend_interfaces.c b/Zend/zend_interfaces.c
+index 0d5af66..51b7717 100644
+--- a/Zend/zend_interfaces.c
++++ b/Zend/zend_interfaces.c
+@@ -154,6 +154,9 @@ ZEND_API void zend_user_it_get_current_key(zend_object_iterator *_iter, zval *ke
+ 	zend_user_iterator *iter = (zend_user_iterator*)_iter;
+ 	zval *object = &iter->it.data;
+ 	zend_call_method_with_0_params(Z_OBJ_P(object), iter->ce, &iter->ce->iterator_funcs_ptr->zf_key, "key", key);
++	if (UNEXPECTED(Z_ISREF_P(key))) {
++		zend_unwrap_reference(key);
++	}
+ }
+ /* }}} */
+ 
+-- 
+1.8.3.1
+

@@ -27,7 +27,7 @@
 
 Name:          php
 Version:       %{upver}%{?rcver:~%{rcver}}
-Release:       6
+Release:       7
 Summary:       PHP scripting language for creating dynamic web sites
 License:       PHP and Zend-2.0 and BSD and MIT and ASL 1.0 and NCSA
 URL:           http://www.php.net/
@@ -65,6 +65,12 @@ Patch13:       backport-0001-CVE-2021-21705.patch
 Patch14:       backport-0002-CVE-2021-21705.patch
 Patch15:       backport-CVE-2021-21704.patch
 Patch16:       backport-CVE-2021-21703.patch
+Patch17:       backport-Handle-throwing-destructor-in-BIND_STATIC.patch
+Patch18:       backport-Bail-on-exception-during-delayed-autoload.patch
+Patch19:       backport-Fix-ASSIGN_DIM-to-NEXT-with-rc-1-reference-value.patch
+Patch20:       backport-Undef-slot-before-destroying-in-unset_property.patch
+Patch21:       backport-Handle-ref-return-from-Iterator-key.patch
+Patch22:       backport-Fix-return-by-ref-from-array_reduce-callback.patch
 
 BuildRequires: bzip2-devel, curl-devel >= 7.9, httpd-devel >= 2.0.46-1, pam-devel, httpd-filesystem, nginx-filesystem
 BuildRequires: libstdc++-devel, openssl-devel, sqlite-devel >= 3.6.0, zlib-devel, smtpdaemon, libedit-devel
@@ -1103,6 +1109,9 @@ systemctl try-restart php-fpm.service >/dev/null 2>&1 || :
 
 
 %changelog
+* Sat Dec 18 2021 yixiangzhike <yixiangzhike007@163.com> - 8.0.0-7
+- Fix bugs found by oss-fuzz
+
 * Thu Nov 4 2021 panxiaohe <panxiaohe@huawei.com> - 8.0.0-6
 - Fix CVE-2021-21703
 
