@@ -27,7 +27,7 @@
 
 Name:          php
 Version:       %{upver}%{?rcver:~%{rcver}}
-Release:       7
+Release:       8
 Summary:       PHP scripting language for creating dynamic web sites
 License:       PHP and Zend-2.0 and BSD and MIT and ASL 1.0 and NCSA
 URL:           http://www.php.net/
@@ -602,6 +602,9 @@ ln -sf ../configure
     --without-pear --with-exec-dir=%{_bindir} --without-gdbm --with-openssl \
     --with-system-ciphers --with-pcre-regex=%{_prefix} --with-zlib --with-layout=GNU --with-kerberos \
     --with-libxml-dir=%{_prefix} --with-system-tzdata --with-mhash \
+%ifarch riscv64
+    --without-pcre-jit \
+%endif
 %if %{with_argon2}
     --with-password-argon2 \
 %endif
@@ -1109,6 +1112,9 @@ systemctl try-restart php-fpm.service >/dev/null 2>&1 || :
 
 
 %changelog
+* Fri Dec 31 2021 lvxiaoqian <xiaoqian@nj.iscas.ac.cn> - 8.0.0-8
+- update spec for riscv
+
 * Sat Dec 18 2021 yixiangzhike <yixiangzhike007@163.com> - 8.0.0-7
 - Fix bugs found by oss-fuzz
 
